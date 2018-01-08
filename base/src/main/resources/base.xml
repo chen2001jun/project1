@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath:dao.xml"/>
+
+    <context:component-scan base-package="com.lld360.cnc.service"/>
+
+    <!-- Spring message -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="useCodeAsDefaultMessage" value="true"/>
+        <property name="basenames">
+            <list>
+                <value>locale.text</value>
+                <value>locale.message</value>
+            </list>
+        </property>
+    </bean>
+
+    <context:property-placeholder location="classpath:config.properties"/>
+
+    <bean class="com.lld360.cnc.core.Configer">
+        <property name="env" value="${APP.ENV}"/>
+        <property name="appUrl" value="${APP.url}"/>
+
+        <property name="wxGzhToken" value="${WX.GZH.TOKEN}"/>
+        <property name="wxGzhAppID" value="${WX.GZH.AppID}"/>
+        <property name="wxGzhAppSecret" value="${WX.GZH.AppSecret}"/>
+        <property name="wxGzhEncodingAESKey" value="${WX.GZH.EncodingAESKey}"/>
+
+        <property name="wxAccountAppid" value="${wx.account.appid}"/>
+        <property name="wxAccountScrect" value="${wx.account.secret}"/>
+        <property name="qqAccountAppid" value="${qq.account.appid}"/>
+        <property name="qqAccountScrect" value="${qq.account.secret}"/>
+
+        <property name="fileBasePath" value="${file.base.path}"/>
+        <property name="expiredTime" value="${sms.expiredTime}"/>
+        <property name="taobaoSmsClient">
+            <bean class="com.taobao.api.DefaultTaobaoClient">
+                <constructor-arg name="serverUrl" value="${sms.url}"/>
+                <constructor-arg name="appKey" value="${sms.appkey}"/>
+                <constructor-arg name="appSecret" value="${sms.appsecret}"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!--全局配置Json和Xml转换器(不输出Null属性)-->
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+        <property name="serializationInclusion" value="NON_NULL"/>
+    </bean>
+    <bean id="xmlMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper">
+        <property name="serializationInclusion" value="NON_NULL"/>
+    </bean>
+
+    <!--线程池异步发送邮件-->
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="5"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="queueCapacity" value="25"/>
+    </bean>
+
+    <bean id="aliSmsSender" class="com.lld360.cnc.core.bean.AliSmsSender"/>
+
+    <!-- Office文件转PDF的组件Bean -->
+    <bean id="documentConverter"
+          class="com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter" lazy-init="true">
+        <constructor-arg name="connection">
+            <bean class="com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection"
+                  init-method="connect" destroy-method="disconnect">
+                <constructor-arg name="host" value="${soffice.host}"/>
+                <constructor-arg name="port" value="${soffice.port}"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+</beans>

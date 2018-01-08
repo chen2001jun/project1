@@ -1,0 +1,136 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title ng-bind="title">加载中……</title>
+    <meta name="description" content="数控技术资料管理平台">
+    <meta name="keywords" content="数控技术资料,管理平台">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <link rel="stylesheet" href="amazeui/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="amazeui/css/admin.css">
+    <link rel="stylesheet" href="scripts/plugins/umeditor/themes/default/css/umeditor.min.css">
+    <link rel="stylesheet" href="amazeui/css/app.css">
+</head>
+<body>
+<!--[if lte IE 10]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，系统暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a> 以获得更好的体验！</p>
+<![endif]-->
+
+<header class="am-topbar am-topbar-inverse admin-header">
+    <div class="am-topbar-brand">
+        <strong></strong>
+        <small>{{title}}管理平台</small>
+    </div>
+
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+            data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+            class="am-icon-bars"></span></button>
+
+    <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+        <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+            <li><a href="javascript:;"><span class="am-icon-envelope-o"></span> 收件箱 <span
+                    class="am-badge am-badge-warning">5</span></a></li>
+            <li class="am-dropdown" data-am-dropdown>
+                <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                    <span class="am-icon-users"></span>
+                    <span ng-bind="admin.name">管理员</span>
+                    <span class="am-icon-caret-down"></span>
+                </a>
+                <ul class="am-dropdown-content">
+                    <li><a href="#"><span class="am-icon-user"></span> 资料</a></li>
+                    <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+                    <li><a href ng-click="logout()"><span class="am-icon-power-off"></span> 退出</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</header>
+
+<div class="am-cf admin-main">
+    <!-- sidebar start -->
+    <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
+        <div class="am-offcanvas-bar admin-offcanvas-bar">
+            <ul class="am-list admin-sidebar-list">
+                <li><a href="#/index"><span class="am-icon-home"></span> 首页</a></li>
+                <li class="admin-parent" ng-if="admin.isRoot">
+                    <a class="am-cf" data-am-collapse="{target: '#collapse-user'}"><span class="am-icon-users"></span>
+                        用户管理 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+                    <ul class="am-list am-collapse admin-sidebar-sub" id="collapse-user">
+                        <li><a href="#/user" class="am-cf"><span class="am-icon-users"></span> 用户列表<span
+                                class="am-icon-star am-fr am-margin-right admin-icon-yellow"></span></a></li>
+                    </ul>
+                </li>
+                <li class="admin-parent">
+                    <a class="am-cf" data-am-collapse="{target: '#collapse-article'}"><span class="am-icon-file"></span>
+                        数控资料管理 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+                    <ul class="am-list am-collapse admin-sidebar-sub" id="collapse-article">
+                        <li><a href="#/articles" class="am-cf"><span class="am-icon-check"></span> 资料列表<span
+                                class="am-icon-star am-fr am-margin-right admin-icon-yellow"></span></a></li>
+                        <li class="am-hide"><a href="#/articles"><span class="am-icon-puzzle-piece"></span> 新增资料</a></li>
+                        <li><a href="#/articles/download"><span class="am-icon-th"></span> 抓取更新 </a></li>
+                    </ul>
+                </li>
+                <li class="admin-parent">
+                    <a class="am-cf" data-am-collapse="{target: '#collapse-doc'}"><span class="am-icon-life-bouy"></span>
+                        文库管理 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+                    <ul class="am-list am-collapse admin-sidebar-sub" id="collapse-doc">
+                        <li><a href="#/doc" class="am-cf"><span class="am-icon-check"></span> 文档列表<span
+                                class="am-icon-star am-fr am-margin-right admin-icon-yellow"></span></a></li>
+                        <li><a href="#/doc/0"><span class="am-icon-puzzle-piece"></span> 新增文档</a></li>
+                        <li><a href="#/doctag"><span class="am-icon-puzzle-piece"></span> 标签管理</a></li>
+                        <li><a href="#/docCategory"><span class="am-icon-puzzle-piece"></span> 分类管理</a></li>
+
+                    </ul>
+                </li>
+                <li class="admin-parent">
+                    <a class="am-cf" data-am-collapse="{target: '#collapse-wx'}"><span class="am-icon-wechat"></span>
+                        微信公众号 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+                    <ul class="am-list am-collapse admin-sidebar-sub" id="collapse-wx">
+                        <li><a href="#/wxqa"><span class="am-icon-won"></span> 微信词条管理</a></li>
+                        <li ng-if="admin.isRoot"><a href="#/wxarticle"><span class="am-icon-list"></span> 文章列表设置</a></li>
+                        <li ng-if="admin.isRoot"><a href="#/wxmenu"><span class="am-icon-meh-o"></span> 菜单配置</a></li>
+                        <li><a href="#/wxhelpage"><span class="am-icon-heart-o"></span> 帮助页面</a></li>
+                    </ul>
+                </li>
+                <li class="admin-parent">
+                    <a class="am-cf" data-am-collapse="{target: '#collapse-bb'}"><span class="am-icon-table"></span>
+                        报表 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+                    <ul class="am-list am-collapse admin-sidebar-sub" id="collapse-bb">
+                        <li><a href="#/searchword"><span class="am-icon-search"></span> 词条搜索统计</a></li>
+                        <li><a href="#/docreport/{{''}}/{{''}}"><span class="am-icon-life-bouy"></span> 文库下载统计</a></li>
+                        <li><a href="#/monthreport"><span class="am-icon-download"></span> 浏览下载统计</a></li>
+                        <li><a href="#/userreport"><span class="am-icon-users"></span> 用户注册统计</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- sidebar end -->
+
+    <!-- content start -->
+    <div class="admin-content">
+        <div class="admin-content-body" ui-view>
+        </div>
+
+        <footer class="admin-content-footer">
+            <hr>
+            <p class="am-padding-left">© 2016 </p>
+        </footer>
+    </div>
+    <!-- content end -->
+
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu"
+   data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<script type="text/javascript" src="scripts/components/jquery.min.js"></script>
+<script type="text/javascript" src="amazeui/js/amazeui.min.js"></script>
+<script type="text/javascript" src="assets/utils.js"></script>
+<script type="text/javascript" data-main="scripts/cfg" src="scripts/components/require.js"></script>
+</body>
+</html>

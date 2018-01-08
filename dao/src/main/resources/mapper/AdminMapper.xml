@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lld360.cnc.repository.AdminDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="baseColumns">
+        id, account, `password`, `name`, last_login
+    </sql>
+
+    <select id="findByAccount" parameterType="string" resultType="com.lld360.cnc.model.Admin">
+        SELECT
+        <include refid="baseColumns"/>
+        FROM admin
+        WHERE account = #{account}
+    </select>
+
+    <update id="update" parameterType="com.lld360.cnc.model.Admin">
+        UPDATE admin
+        SET `password` = #{password}, `name` = #{name}, last_login = #{lastLogin}
+        WHERE account = #{account}
+    </update>
+
+</mapper>

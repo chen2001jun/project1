@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CNC数控文库</title>
+<link rel="stylesheet" href="../css/public.css" type="text/css">
+<link rel="stylesheet" href="../css/style.css" type="text/css">
+<link rel="stylesheet" href="../css/icheck-blue.css" type="text/css">
+<link rel="stylesheet" href="../css/jquery.Jcrop.css" type="text/css">
+<script type="text/javascript" src="../js/min/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/min/icheck.min.js"></script>
+<script type="text/javascript" src="../js/min/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="../js/website.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/lrtk.js"></script>
+<script type="text/javascript">
+$(document).scroll(function(){
+	if($(document).scrollTop() > $('.reader-content').offset().top){
+		$('.reader-content .reader-toolbar').addClass('fixed').css('top',0);
+	}else{
+		$('.reader-content .reader-toolbar').removeClass('fixed').css('top',0);
+	}
+	
+	if($(document).scrollTop() > $('.aside').offset().top){
+		$('.aside .aside-wrapper').addClass('fixed').css('top',0);
+	}else{
+		$('.aside .aside-wrapper').removeClass('fixed').css('top',0);
+	}
+	
+	if($(document).scrollTop() > ($('.doc-content').offset().top + $('.doc-content').height() - $('.aside .aside-wrapper').height())){
+		$('.aside .aside-wrapper').removeClass('fixed').css('top', $('.doc-content').height() - $('.aside .aside-wrapper').height());
+	}
+});
+
+$(function(){
+	//导航容器宽
+	var wrapperWidth = $('.reader-content').width() - parseInt($('.reader-content .reader-toolbar').css('borderLeftWidth')) - parseInt($('.reader-content .reader-toolbar').css('borderRightWidth'));
+	$('.reader-content .reader-toolbar').css('width',wrapperWidth);
+	
+	//计算当前浏览图片页码
+	//动画速度
+	var speed = 250,
+		offsetFix = 0;
+	$(document).scroll(function(){
+		$('.reader-box .reader-page').each(function(index, element) {
+			var $ctx = $(this);
+			rangeTop = parseInt($(element).offset().top - offsetFix,10),
+			rangeBottom = parseInt($(element).offset().top + $(element).height(),10);
+			if($(document).scrollTop() >= rangeTop && $(document).scrollTop() <= rangeBottom){
+				$('.reader-count .current').text(index + 1);
+			}
+		});
+	});
+	
+	//图片懒加载
+	$('.reader-box img').lazyload();
+	
+	//
+	$('.btn-download').on('click', function(){
+		var pagei = layer.open({
+			type: 1,   //0-4的选择,
+			title: "绑定账号",
+			border: [0],
+			shadeClose: true,
+			area: ['auto', 'auto'],
+			content:  $('#accountDialog')
+		});
+	})
+})
+</script>
+</head>
+
+<body>
+<div class="header">
+	<div class="top">
+    	<div class="container">
+    		<div class="logo"></div>
+            <div class="searchbar">
+            	<div class="searchbox clearfix">
+            		<input class="search-input" type="text" placeholder="请输入您要搜索的关键词">
+                	<button class="search-btn" type="button"></button>
+                </div>
+                <div class="search-hots">
+                	<span>热门搜索：</span>
+	        		<a href="#">操作手册</a>
+	        		<a href="#">帮助文档</a>
+	        		<a href="#">西门子</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav">
+    	<div class="container">
+        	<ul class="menu clearfix">
+            	<li><a href="index.html">首页</a></li>
+                <li>
+                    <a class="icon-down" href="#"><span>分类</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">下拉菜单一</a></li>
+                        <li><a href="#">下拉菜单二</a></li>
+                        <li><a href="#">下拉菜单三</a></li>
+                        <li><a href="#">下拉菜单四</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="nav-toolbar clearfix">
+                <div class="userbar clearfix">
+                    <a class="userdrop-toggle" href="###">
+                        <img class="portrait" src="../images/default_avatar.png">
+                        <span class="name">李先森</span>
+                    </a>
+                    <ul class="userbar-userdrop">
+                        <div class="userbar-profile clearfix">
+                            <img class="profile-avatar" src="../images/default_avatar.png" alt=""/>
+                            <div class="profile-info">
+                                <div class="profile-name">
+                                    李先森
+                                    <div class="profile-menu">
+                                        <a href="#">管理</a>
+                                        <a href="#">退出</a>
+                                    </div>
+                                </div>
+                                <div class="profile-score">
+                                    我的积分：<em>20</em>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="userbar-box">
+                            <div class="box-wrapper">
+                                <div class="box-header">个人中心</div>
+                                <div class="box-content">
+                                    <!--
+                                    <div class="box-empty">
+                                        <div class="doc-tips">暂无文档，赶紧上传吧!</div>
+                                        <div class="upload-btn">上传我的文档</div>
+                                    </div>
+                                    -->
+                                    <div class="box-list">
+                                        <div class="doc-mine">
+                                            <dl class="clearfix">
+                                                <dt><a href="#">设计师要懂心理学</a></dt>
+                                                <dd>8页</dd>
+                                            </dl>
+                                            <dl class="clearfix">
+                                                <dt><a href="#">设计师要懂心理学</a></dt>
+                                                <dd>8页</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="upload-btn">上传我的文档</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content bg-white pd-b">
+	<div class="container">
+        <div class="page-doc clearfix">
+        	<div class="doc-header">
+                <div class="doc-title pdf">CNC宏程序</div>
+                <div class="doc-meta clearfix">
+                    <div class="meta-pic"><img src="../images/demo/p1.jpg" alt=""/></div>
+                    <div class="meta-info">
+                        <div class="clearfix">
+                            <div class="meta-info-name">小编001</div>
+                            <ul class="meta-info-nums clearfix">
+                                <li>PDF文档</li>
+                                <li><em>阅读：</em>10252</li>
+                                <li><em>上传者：</em>雨石</li>
+                                <li><em>积分：</em>5</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="doc-content clearfix">
+                <div class="main">
+                    <div class="doc-reader">
+                        <div class="reader-content">
+                            <div class="reader-toolbar clearfix">
+                                <a class="reader-btn btn-download" href="javascript:;"><i class="fa fa-download"></i> 下载</a>
+                                <a class="reader-btn btn-fav" href="javascript:;"><i class="fa fa-star"></i> 收藏</a>
+                                <div class="reader-count">页数：<span class="current">1</span>/8</div>
+                            </div>
+                            <div class="reader-box">
+                                <div class="reader-box-wrapper">
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/1.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/2.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/3.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/4.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/5.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/6.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/7.jpg" alt=""/>
+                                    <img class="reader-page" src="../images/grey.gif" data-original="../images/demo/pdf/8.jpg" alt=""/>
+                                    <div class="reader-finish">
+                                        <ul class="finish-list">
+                                            <li>阅读已结束，如果下载本文需要使用 <span class="color-red">5积分</span></li>
+                                            <li>
+                                                <a href="javascript:;" class="button btn-blue btn-large btn-download margintop15">下载文档</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+                </div>
+                <div class="aside">
+                    <div class="aside-wrapper">
+                        <div class="widget">
+                            <div class="widget-header">相关文档推荐</div>
+                            <div class="widget-content">
+                                <div class="widget-item pdf"><a class="linkcolor linkline" href="#">数控车宏程序编程方法及技巧</a></div>
+                                <div class="widget-item doc"><a class="linkcolor linkline" href="#">(入门)数控宏程序</a></div>
+                                <div class="widget-item doc"><a class="linkcolor linkline" href="#">数控宏程序编程</a></div>
+                                <div class="widget-item txt"><a class="linkcolor linkline" href="#">数控车宏程序基础</a></div>
+                                <div class="widget-item ppt"><a class="linkcolor linkline" href="#">数控宏程序的使用方法</a></div>
+                                <div class="widget-item jpg"><a class="linkcolor linkline" href="#">FANUC 0i-md硬件连接图</a></div>
+                            </div>
+                        </div>
+                        
+                        <div class="widget margintop30">
+                            <div class="widget-header">热门文档</div>
+                            <div class="widget-content">
+                                <div class="hots-list">
+                                    <dl class="clearfix">
+                                        <dt>1</dt>
+                                        <dd>
+                                            <a class="hots-title linkcolor linkline" href="#">从零开始做运营 入门篇</a>
+                                            <div class="count">14320人阅读</div>
+                                        </dd>
+                                    </dl>
+                                    <dl class="clearfix">
+                                        <dt>2</dt>
+                                        <dd>
+                                            <a class="hots-title linkcolor linkline" href="#">从零开始做运营 入门篇</a>
+                                            <div class="count">14320人阅读</div>
+                                        </dd>
+                                    </dl>
+                                    <dl class="clearfix">
+                                        <dt>3</dt>
+                                        <dd>
+                                            <a class="hots-title linkcolor linkline" href="#">从零开始做运营 入门篇</a>
+                                            <div class="count">14320人阅读</div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="#0" class="cd-top">Top</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer pd">
+  <div class="container clearfix">
+		<div class="logo"></div>
+        <div class="footer-info">
+        	<ul class="footer-nav clearfix">
+            	<li><a class="linkcolor linkline" href="#">商务合作</a></li>
+                <li><a class="linkcolor linkline" href="#">意见反馈</a></li>
+                <li><a class="linkcolor linkline" href="#">关于我们</a></li>
+                <li><a class="linkcolor linkline" href="#">版权声明</a></li>
+            </ul>
+            <div class="footer-text">
+            	© Copyright 2016 蜀ICP备15032808号-1.
+            </div>
+        </div>
+        <img class="qr" src="../images/qr.jpg" width="430" height="430" alt=""/>
+  </div>
+</div>
+
+<div class="crop-dialog clearfix">
+	<div class="avatar-select">
+      	<div class="crop-add">
+        </div>
+        
+        <div class="crop-dialog-btns">
+        	<a class="btn-yes">保存</a>
+        </div>
+    </div>
+	<div class="crop-box">
+    	<div class="clearfix">
+            <div class="crop-main">
+                <div class="crop-wrapper">
+                    <img src="images/blank.png" class="img-origin" alt="[Jcrop Example]">
+                </div>
+            </div>
+            <div class="crop-side">
+                <div class="crop-preview">
+                    <img src="images/blank.png" class="img-preview" alt="Preview">
+                    <input type="file" name="file" class="upload-select" id="upload-select" style="display: none;"/>
+                </div>
+                <div class="tips"><i class="bek-icon-quote-left"></i> 您可以拖动图片进行裁剪，达到满意效果后点击保存生成头像。 <i class="bek-icon-quote-right"></i></div>
+            </div>
+        </div>
+        <div class="crop-dialog-btns">
+        	<a class="btn-yes">保存</a>
+        </div>
+    </div>
+</div>
+
+<div id="accountDialog" style="padding: 20px; width: 420px; display: none;">
+	<div class="dialog-header">您需要绑定站内账号，才能够下载资料</div>
+	<form class="dialog-form" action="#" method="post">
+        <div class="row">
+            <label for="phone">手机号：</label>
+            <div class="item">
+            	<div class="clearfix">
+                	<input class="ui-input-default phonenumber" id="phone" type="text" /><a class="button-tiny">获取验证码</a>
+                </div>
+            </div>
+        </div>
+        
+        <!--
+        <div class="row form-group success">
+            <label for="phone">手机号：</label>
+            <div class="item">
+            	<div class="clearfix">
+                	<input class="ui-input-default phonenumber" id="phone" type="text" /><a class="button-tiny">获取验证码</a>
+                </div>
+                <div class="txt"><i class="fa fa-check"></i> 正确提示信息</div>
+            </div>
+        </div>
+        -->
+        
+        <div class="row">
+            <label for="phone">验证码：</label>
+            <div class="item">
+                <div><input class="ui-input-default" id="code" type="text" /></div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <label for="password">密码：</label>
+            <div class="item">
+                <div><input class="ui-input-default" id="password" type="password" /></div>
+            </div>
+        </div>
+        
+        <div class="row">
+        	<label></label>
+            <div class="item">
+            	<button class="button btn-large btn-primary" type="submit">绑定账号</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

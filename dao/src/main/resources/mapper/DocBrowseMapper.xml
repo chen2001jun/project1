@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lld360.cnc.repository.DocBrowseDao">
+
+    <!-- 定义全局查询的SQL变量语句 -->
+    <sql id="searchCondition">
+        <where>
+            <if test="userId != null">AND user_id = #{userId}</if>
+            <if test="docId != null">AND doc_id = #{docId}</if>
+        </where>
+    </sql>
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+	    <![CDATA[
+        user_id,
+        doc_id,
+        update_time
+        ]]>
+	</sql>
+
+    <select id="search" parameterType="map" resultMap="docbrowseMap">
+        SELECT
+        <include refid="columns"/>
+        FROM doc_browse
+        <include refid="searchCondition"/>
+        ORDER BY update_time DESC
+        <if test="limit != null">LIMIT #{limit}</if>
+        <if test="offset != null">OFFSET #{offset}</if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT count(1)
+        FROM doc_browse
+        <include refid="searchCondition"/>
+    </select>
+
+    <insert id="save" parameterType="com.lld360.cnc.model.DocBrowse">
+        INSERT INTO
+            doc_browse (user_id, doc_id, update_time)
+        VALUES
+            (#{userId}, #{docId}, #{updateTime})
+        ON DUPLICATE KEY UPDATE
+            update_time = #{updateTime}
+    </insert>
+
+
+    <!-- 结果集mapper -->
+    <resultMap id="docbrowseMap" type="com.lld360.cnc.model.DocBrowse">
+        <result property="userId" column="user_id"/>
+        <result property="docId" column="doc_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+</mapper> 

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lld360.cnc.repository.UserDao">
+
+    <sql id="searchCondition">
+        <where>
+            <if test="key != null">(u.mobile LIKE "%"#{key}"%" OR u.name LIKE "%"#{key}"%" OR u.nickname LIKE "%"#{key}"%")</if>
+            <if test="mobile != null">u.mobile LIKE "%"#{mobile}"%"</if>
+            <!--<if test="name != null">`name` like "%"#{name}"%"</if>
+            <if test="nickname != null">nickname like "%"#{nickname}"%"</if>
+            <if test="description != null">description like "%"#{description}"%"</if>
+            <if test="createTime != null">create_time = #{createTime}</if>
+            <if test="lastLogin != null">last_login = #{lastLogin}</if>
+            <if test="state != null">state = #{state}</if>-->
+            <if test="beginTime != null">AND u.create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND u.create_time &lt;= #{endTime}</if>
+        </where>
+    </sql>
+
+    <sql id="columns">
+        u.id id, u.name `name`, u.mobile mobile, u.password password, u.nickname nickname, u.avatar avatar, u.address address, u.description description, u.create_time createTime, u.last_login lastLogin, u.state state
+    </sql>
+
+    <sql id="columnsWithScore">
+        <include refid="columns"/>
+        ,us.total_score totalScore,us.total_in totalIn,us.total_out totalOut
+    </sql>
+
+    <select id="search" parameterType="map" resultType="com.lld360.cnc.dto.UserDto">
+        SELECT
+        <include refid="columnsWithScore"/>
+        FROM `user` u
+        LEFT JOIN user_score us on us.user_id = u.id
+        <include refid="searchCondition"/>
+        <if test="sortBy == 'total_score'">
+            ORDER BY us.${sortBy} ${sortType}
+        </if>
+        <if test="limit != null and offset != null">LIMIT #{limit} OFFSET #{offset}</if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT COUNT(1)
+        FROM `user` u
+        <include refid="searchCondition"/>
+    </select>
+
+    <select id="find" parameterType="long" resultType="com.lld360.cnc.model.User">
+        SELECT
+        <include refid="columns"/>
+        FROM `user` u
+        WHERE u.id = #{id}
+    </select>
+
+    <select id="findByMobile" parameterType="string" resultType="com.lld360.cnc.dto.UserDto">
+        SELECT
+        <include refid="columns"/>
+        FROM `user` u
+        WHERE u.mobile = #{mobile};
+    </select>
+
+    <insert id="create" parameterType="com.lld360.cnc.dto.UserDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user` (
+            `name`,
+            mobile,
+            password,
+            nickname,
+            avatar,
+            address,
+            description,
+            create_time,
+            last_login,
+            state
+        ) VALUES (
+            #{name},
+            #{mobile},
+            #{password},
+            #{nickname},
+            #{avatar},
+            #{address},
+            #{description},
+            #{createTime},
+            #{lastLogin},
+            #{state}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.lld360.cnc.model.User">
+        UPDATE `user`
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <!--<if test="mobile != null">mobile = #{mobile},</if>-->
+            <if test="password != null">`password` = #{password},</if>
+            <if test="nickname != null">nickname = #{nickname},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="description != null">description = #{description},</if>
+            <!--<if test="createTime != null">create_time = #{createTime},</if>-->
+            <if test="lastLogin != null">last_login = #{lastLogin},</if>
+            <if test="state != null">state = #{state},</if>
+        </set>
+        WHERE id = #{id};
+    </update>
+
+    <update id="updateByMobile" parameterType="com.lld360.cnc.model.User">
+        UPDATE `user`
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="password != null">`password` = #{password},</if>
+            <if test="nickname != null">nickname = #{nickname},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="description != null">description = #{description},</if>
+            <!--<if test="createTime != null">create_time = #{createTime},</if>-->
+            <if test="lastLogin != null">last_login = #{lastLogin},</if>
+            <if test="state != null">state = #{state},</if>
+        </set>
+        WHERE mobile = #{mobile};
+    </update>
+
+    <update id="updateState">
+        UPDATE `user`
+        SET state = #{state}
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updateAvatar">
+        UPDATE `user`
+        SET avatar = #{relativeFile}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findUserDto" parameterType="long" resultType="com.lld360.cnc.dto.UserDto">
+        SELECT
+        <include refid="columnsWithScore"/>
+        FROM `user` u
+        LEFT JOIN user_score us ON u.id = us.user_id
+        WHERE u.id = #{id}
+    </select>
+
+</mapper> 

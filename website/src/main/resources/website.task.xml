@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <description>WebSite的定时任务</description>
+
+    <bean class="com.lld360.cnc.website.quartz.ContextQuartz" id="contextQuartz" init-method="doInitTask"/>
+
+    <task:scheduler id="springScheduler" pool-size="2"/>
+    <task:annotation-driven/>
+    <task:scheduled-tasks>
+        <!--<task:scheduled ref="contextQuartz" method="updateHotSearchWords" cron="0 0 * * * ?"/>-->
+        <!--每隔一小时执行-->
+        <task:scheduled ref="contextQuartz" method="updateHotSearchWords" cron="0 0 0/1 * * ?"/>
+    </task:scheduled-tasks>
+
+</beans>
